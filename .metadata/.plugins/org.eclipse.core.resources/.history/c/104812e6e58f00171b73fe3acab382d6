@@ -1,0 +1,26 @@
+package application;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+
+public class Registration {
+
+	public void initialise(){
+
+		GridPane grid = new GridPane();
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(30,30,30,30));
+
+		 Stage stage = new Stage();
+         stage.setTitle("Register");
+         Scene registrationScene = new Scene(grid,400,400);
+         stage.setScene(registrationScene);
+         stage.show();
+
+
+}

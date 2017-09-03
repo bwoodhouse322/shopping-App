@@ -1,0 +1,112 @@
+package application;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+
+public class Main extends Application {
+
+
+	public static void main(String[] args) {
+		//launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		//name the tab
+		primaryStage.setTitle("Welcome");
+
+		//create and set the grid for alignment
+		GridPane grid = new GridPane();
+		createGrid(grid);
+
+		//adding details to the grid
+		Text scenetitle = new Text("Bennies");
+		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+		grid.add(scenetitle, 0, 0,2,1);
+
+		Label userName = new Label("User Name:");
+		grid.add(userName,  0,1);
+
+		TextField userTextField  = new TextField();
+		grid.add(userTextField, 1, 1);
+
+		Label password =  new Label("Password:");
+		grid.add(password, 0, 2);
+
+		PasswordField passwordBox = new PasswordField();
+		grid.add(passwordBox, 1, 2);
+
+		Button signbtn = new Button("Sign in");
+		HBox hbBtn = new HBox(10);
+		hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+		hbBtn.getChildren().add(signbtn);
+		grid.add(hbBtn, 1, 4);
+		signbtn.setOnAction(new EventHandler<ActionEvent>() {
+
+		    @Override
+		    public void handle(ActionEvent e) {
+
+
+		    }
+		});
+
+		Button registerbtn = new Button("Register");
+		HBox hbBtn2 = new HBox(10);
+		hbBtn2.setAlignment(Pos.BOTTOM_RIGHT);
+		hbBtn2.getChildren().add(registerbtn);
+		grid.add(hbBtn2, 0, 4);
+		registerbtn.setOnAction(new EventHandler<ActionEvent>() {
+
+		    @Override
+		    public void handle(ActionEvent e) {
+		    	primaryStage.close();
+		    	register();
+
+		    }
+		});
+
+		//create scene and add grid and form dimensions
+		Scene scene = new Scene(grid,400,400);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+
+	
+	public void createGrid(GridPane grid){
+		
+		grid.setAlignment(Pos.CENTER);
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(30,30,30,30));
+		
+	}
+	
+	
+	public void register(){
+		
+		GridPane grid = new GridPane();
+		createGrid(grid);
+		
+		 Stage stage = new Stage();
+         stage.setTitle("Registration");
+         Scene registrationScene = new Scene(grid,400,400);
+         stage.setScene(registrationScene);
+         stage.show();
+
+	}
+
+}
