@@ -1,4 +1,6 @@
 package application;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,12 +20,16 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+
+import java.sql.*;
 
 
 public class Main extends Application {
+
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost/Benniesdb";
+	static final String USER = "root";
+	static final String PASS = "Lolipop123";
 
 
 	public static void main(String[] args) {
@@ -65,9 +71,25 @@ public class Main extends Application {
 
 		    @Override//SIGN IN BUTTON
 		    public void handle(ActionEvent e) {
-		    	Stage shopStage = new Stage();
-		    	primaryStage.close();
-		    	shop(shopStage);
+		    	int a ;
+		    	a= checkDetails(userTextField.getText(),passwordBox.getText());
+
+
+				if(a ==0){
+					Stage shopStage = new Stage();
+					primaryStage.close();
+					shop(shopStage);
+				} else {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Sorry!");
+					alert.setHeaderText("Error");
+					alert.setContentText("Incorrect username and password");
+					alert.showAndWait();
+				}
+
+
+
+
 
 
 		    }
@@ -105,7 +127,6 @@ registerbtn.setOnAction(new EventHandler<ActionEvent>() {
 		grid.setPadding(new Insets(30,30,30,30));
 
 	}
-
 	public void shop(Stage shopStage){
 		StackPane root = new StackPane();
 
@@ -158,6 +179,7 @@ registerbtn.setOnAction(new EventHandler<ActionEvent>() {
 		PasswordField passwordBox = new PasswordField();
 		grid.add(passwordBox, 1, 2);
 
+
 		Label Name = new Label("Name:");
 		grid.add(Name,  0,3);
 
@@ -179,27 +201,8 @@ registerbtn.setOnAction(new EventHandler<ActionEvent>() {
 		submitbtn.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override
 		    public void handle(ActionEvent e) {
-		    	 Connection con = null;
-			      Statement stmt = null;
-			      int result = 0;
 
-		    	 try {
-		             Class.forName("org.hsqldb.jdbc.JDBCDriver");
-		             con = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/Benniesdb", "SA", "");
-		             stmt = con.createStatement();
-
-		             result = stmt.executeUpdate("CREATE TABLE tutorials_tbl"
-		             		+ " (id INT NOT NULL, title VARCHAR(50) NOT NULL, "
-		             		+ "author VARCHAR(20) NOT NULL, submission_date DATE, "
-		             		+ "PRIMARY KEY (id));");
-
-		          }  catch (Exception ex) {
-		             ex.printStackTrace(System.out);
-		          }
-
-
-
-
+			insertRecord(userTextField.getText(),passwordBox.getText(),nameTextField.getText(),zipTextField.getText());
 
 
 
@@ -221,5 +224,98 @@ registerbtn.setOnAction(new EventHandler<ActionEvent>() {
          registerStage.show();
 
 	}
+	public void insertRecord(String a, String b ,String c, String d){
+		Connection conn = null;
+		Statement stmt = null;
 
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("Connecting to a selected database...");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Benniesdb", "root", "Lolipop123");
+			System.out.println("Connected database successfully...");
+			System.out.println("Inserting record.....");
+			stmt = conn.createStatement();
+			String sql = "INSERT INTO userdetails VALUES('"+ a +"','"+b+"','"+c+"','"+d+"')";
+			stmt.executeUpdate(sql);
+			System.out.println("Inserted");
+		} catch (SQLException var19) {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Sorry!");
+			alert.setHeaderText("Conflict");
+			alert.setContentText("Username already in use!");
+			alert.showAndWait();
+
+			var19.printStackTrace();
+		} catch (Exception var20) {
+			var20.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					conn.close();
+				}
+			} catch (SQLException var18) {
+				;
+			}
+
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException var17) {
+				var17.printStackTrace();
+			}
+
+		}
+
+
+	}
+	public int checkDetails(String a, String b){
+		Connection conn = null;
+		Statement stmt = null;
+
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("Connecting to a selected database...");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/Benniesdb", "root", "Lolipop123");
+			System.out.println("Connected database successfully...");
+			stmt = conn.createStatement();
+			String sql = "SELECT userid,password FROM userdetails WHERE userid ='"+a+"' AND password ='"+b+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			boolean test =rs.absolute(1);
+			if (test){
+				return 0;
+			} else {
+				return 1;
+			}
+
+
+
+		} catch (SQLException var19) {
+
+			var19.printStackTrace();
+		} catch (Exception var20) {
+			var20.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					conn.close();
+				}
+			} catch (SQLException var18) {
+				;
+			}
+
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException var17) {
+				var17.printStackTrace();
+			}
+
+		}
+
+		return 1;
+
+	}
 }
